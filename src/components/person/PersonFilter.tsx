@@ -16,10 +16,10 @@ export const PersonFilter: React.FC<PersonFilterProps> = ({ persons, draggingPer
 
   const filteredPersons = filterText.trim()
     ? persons.filter(
-        person =>
-          person.name.toLowerCase().includes(filterText.toLowerCase()) ||
-          person.role.toLowerCase().includes(filterText.toLowerCase())
-      )
+      person =>
+        person.name.toLowerCase().includes(filterText.toLowerCase()) ||
+        person.role.toLowerCase().includes(filterText.toLowerCase())
+    )
     : persons;
 
   return (
@@ -60,7 +60,6 @@ export const PersonFilter: React.FC<PersonFilterProps> = ({ persons, draggingPer
             context="sidebar"
             showDeleteButton={true}
             personIndex={index + 1}
-            totalPersons={filteredPersons.length}
           />
         ))
       )}
