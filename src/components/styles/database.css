@@ -163,7 +163,7 @@
 }
 
 .import-options label:hover {
-  background: var(--color-surface, #f5f5f5);
+  background: var(--color-bg-secondary);
 }
 
 .import-options input[type="radio"] {
