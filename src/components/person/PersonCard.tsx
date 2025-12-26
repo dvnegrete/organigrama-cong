@@ -11,6 +11,7 @@ interface PersonCardProps {
   showDeleteButton?: boolean;
   context?: 'sidebar' | 'department';
   departmentId?: string;
+  personIndex?: number;
 }
 
 export const PersonCard: React.FC<PersonCardProps> = ({
@@ -20,7 +21,8 @@ export const PersonCard: React.FC<PersonCardProps> = ({
   isDragging = false,
   showDeleteButton = true,
   context = 'sidebar',
-  departmentId: _departmentId
+  departmentId: _departmentId,
+  personIndex,
 }) => {
   const { deletePerson } = usePersons();
 
@@ -93,7 +95,10 @@ export const PersonCard: React.FC<PersonCardProps> = ({
       {...(isDraggableContext ? listeners : {})}
     >
       <div className="person-info">
-        <div className="person-name">{person.name}</div>
+        <div className="person-name">
+          <span className='person-index'>{personIndex}</span>
+          {person.name}
+        </div>
         {person.role && context === 'department' && <div className="person-role">{person.role}</div>}
       </div>
 

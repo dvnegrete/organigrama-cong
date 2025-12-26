@@ -246,6 +246,10 @@
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
 }
 
+.person-index {
+  padding-right: 10px;
+}
+
 .person-info {
   flex: 1;
   display: flex;
