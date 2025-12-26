@@ -8,8 +8,7 @@ import {
   useSensor,
   useSensors
 } from '@dnd-kit/core';
-import type { DragEndEvent, DragStartEvent, DropAnimation } from '@dnd-kit/core';
-import { defaultDropAnimation } from '@dnd-kit/core';
+import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import { Sidebar } from './Sidebar';
 import { DepartmentCanvas } from '../department/DepartmentCanvas';
 import { PersonCard } from '../person/PersonCard';
