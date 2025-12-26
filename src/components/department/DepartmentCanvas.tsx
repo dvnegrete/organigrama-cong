@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { Department } from './Department';
 import { CreateDepartmentButton } from './CreateDepartmentButton';
+import { DatabaseBackupModal } from '../database/DatabaseBackupModal';
 import { useDepartments } from '../../hooks/useDepartments';
 
 interface DepartmentCanvasProps {
@@ -13,8 +14,9 @@ export const DepartmentCanvas: React.FC<DepartmentCanvasProps> = ({ draggingPers
 
   return (
     <div className="dashboard-canvas-container">
-      <div style={{ padding: '16px', borderBottom: '1px solid var(--color-border)' }}>
+      <div style={{ padding: '16px', borderBottom: '1px solid var(--color-border)', display: 'flex', gap: '12px', alignItems: 'center' }}>
         <CreateDepartmentButton containerRef={containerRef} />
+        <DatabaseBackupModal />
       </div>
 
       <div className="department-canvas" ref={containerRef}>
