@@ -608,6 +608,13 @@
 
 .person-list-header {
   padding-bottom: 15px;
+  position: sticky;
+  top: 0;
+  background-color: var(--color-bg-secondary);
+  z-index: 10;
+  border-bottom: 1px solid var(--color-border);
+  margin: -var(--spacing-md) -var(--spacing-md) 0 -var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-md) 15px var(--spacing-md);
 }
 
 .filter-header-container {
