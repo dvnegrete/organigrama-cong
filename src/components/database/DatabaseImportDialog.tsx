@@ -1,9 +1,8 @@
 import { useState, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCloudArrowUp } from '@fortawesome/free-solid-svg-icons';
+import { faCloudArrowUp, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { parseBackupFile, importDatabase } from '../../features/database';
 import type { DatabaseBackup, ImportOptions } from '../../features/database';
-import { ConfirmDialog } from '../common/ConfirmDialog';
 import '../styles/database.css';
 
 interface DatabaseImportDialogProps {
@@ -73,23 +72,33 @@ export const DatabaseImportDialog: React.FC<DatabaseImportDialogProps> = ({ isOp
 
   if (!isOpen) return null;
 
+  const handleConfirm = () => {
+    if (step === 'preview') {
+      handleImport();
+    } else if (step === 'result') {
+      handleClose();
+    }
+  };
+
+  const isConfirmDisabled = isImporting || (step === 'file-select' && !backup);
+  const showConfirmButton = step !== 'file-select' || backup;
+  const showCancelButton = step !== 'importing';
+
   return (
-    <ConfirmDialog
-      isOpen={isOpen}
-      title="Importar Base de Datos"
-      onConfirm={() => {
-        if (step === 'preview') {
-          handleImport();
-        } else if (step === 'result') {
-          handleClose();
-        }
-      }}
-      onCancel={handleClose}
-      confirmText={step === 'preview' ? 'Importar' : step === 'result' ? 'Cerrar' : 'Cancelar'}
-      cancelText="Cancelar"
-      disableConfirm={isImporting || (step === 'file-select' && !backup)}
-    >
-      <div className="import-dialog-content">
+    <div className="modal-backdrop" onClick={handleClose}>
+      <div className="modal-content import-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
+          <h3 className="modal-title">Importar Base de Datos</h3>
+          <button
+            className="modal-close-btn"
+            onClick={handleClose}
+            title="Cerrar"
+          >
+            <FontAwesomeIcon icon={faTimes} />
+          </button>
+        </div>
+
+        <div className="import-dialog-content">
         {step === 'file-select' && (
           <div className="import-step">
             <p>Selecciona un archivo de backup para importar:</p>
@@ -191,7 +200,33 @@ export const DatabaseImportDialog: React.FC<DatabaseImportDialogProps> = ({ isOp
             )}
           </div>
         )}
+        </div>
+
+        <div className="import-dialog-actions">
+          {showCancelButton && (
+            <button
+              onClick={handleClose}
+              className="btn btn-secondary"
+            >
+              Cancelar
+            </button>
+          )}
+          {showConfirmButton && (
+            <button
+              onClick={handleConfirm}
+              disabled={isConfirmDisabled}
+              className={`btn ${step === 'preview' && importMode === 'replace' ? 'btn-danger' : 'btn-primary'}`}
+            >
+              {step === 'preview' ? 'Importar' : step === 'result' ? 'Cerrar' : 'Siguiente'}
+            </button>
+          )}
+          {step === 'importing' && (
+            <span style={{ color: 'var(--color-text-secondary)', fontSize: '0.9rem' }}>
+              ⏳ Procesando...
+            </span>
+          )}
+        </div>
       </div>
-    </ConfirmDialog>
+    </div>
   );
 };

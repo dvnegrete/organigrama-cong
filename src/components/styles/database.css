@@ -357,6 +357,29 @@
   text-align: center;
 }
 
+/* Import Modal Custom Styles */
+.import-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-width: 500px;
+  width: 90%;
+}
+
+.import-dialog-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border, #e0e0e0);
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.import-dialog-actions .btn {
+  flex: 0 0 auto;
+}
+
 /* Animations */
 @keyframes slideIn {
   from {
