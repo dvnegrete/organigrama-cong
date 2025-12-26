@@ -74,9 +74,15 @@ export const PersonCard: React.FC<PersonCardProps> = ({
 
   const cardClass = [
     'person-card',
-    isAssigned && 'assigned',
     isDragging && isDraggableContext && 'dragging',
     context && `context-${context}`
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  const personInfoClass = [
+    'person-info',
+    isAssigned && context === 'sidebar' && 'assigned'
   ]
     .filter(Boolean)
     .join(' ');
@@ -94,7 +100,7 @@ export const PersonCard: React.FC<PersonCardProps> = ({
       {...(isDraggableContext ? attributes : {})}
       {...(isDraggableContext ? listeners : {})}
     >
-      <div className="person-info">
+      <div className={personInfoClass}>
         <div className="person-name">
           <span className='person-index'>{personIndex}</span>
           {person.name}

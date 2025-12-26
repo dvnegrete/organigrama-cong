@@ -228,6 +228,7 @@
   justify-content: space-between;
   align-items: center;
   gap: var(--spacing-md);
+  margin: 4px 0;
 }
 
 .person-card:hover {
@@ -235,8 +236,7 @@
   border-color: var(--color-primary);
 }
 
-.person-card.assigned {
-  background-color: var(--color-assigned-bg);
+.person-info.assigned {
   opacity: var(--color-assigned-opacity);
   color: var(--color-assigned-text);
 }
@@ -305,7 +305,7 @@
   color: var(--color-text-secondary);
 }
 
-.person-card.assigned .person-role {
+.person-info.assigned .person-role {
   color: inherit;
 }
 
@@ -316,11 +316,11 @@
 }
 
 .person-badge {
-  background-color: var(--color-primary-light);
-  color: var(--color-primary);
-  padding: 2px 6px;
-  border-radius: var(--radius-sm);
-  font-size: var(--font-size-xs);
+  background-color: var(--color-primary);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: var(--font-size-md);
   font-weight: var(--font-weight-semibold);
 }
 
