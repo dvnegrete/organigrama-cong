@@ -19,10 +19,21 @@ export const useAssignments = () => {
 
     if (existing) return; // Already assigned
 
+    // Get the current max order for this department
+    const departmentAssignments = await db.assignments
+      .where('departmentId')
+      .equals(departmentId)
+      .toArray();
+
+    const maxOrder = departmentAssignments.length > 0
+      ? Math.max(...departmentAssignments.map(a => a.order || 0))
+      : -1;
+
     const assignment: Assignment = {
       id: generateUUID(),
       personId,
       departmentId,
+      order: maxOrder + 1,
       createdAt: new Date()
     };
 
@@ -37,11 +48,13 @@ export const useAssignments = () => {
   };
 
   const getPeopleByDepartment = (departmentId: string) => {
-    const personIds = assignments
+    const departmentAssignments = assignments
       .filter((a) => a.departmentId === departmentId)
-      .map((a) => a.personId);
+      .sort((a, b) => (a.order || 0) - (b.order || 0));
 
-    return persons.filter((p) => personIds.includes(p.id));
+    return departmentAssignments
+      .map((a) => persons.find((p) => p.id === a.personId))
+      .filter((p): p is typeof persons[0] => p !== undefined);
   };
 
   const getDepartmentsByPerson = (personId: string) => {
@@ -62,6 +75,23 @@ export const useAssignments = () => {
     await db.assignments.where('personId').equals(personId).delete();
   };
 
+  const reorderPeopleInDepartment = async (departmentId: string, orderedPersonIds: string[]) => {
+    const updates = orderedPersonIds.map((personId, index) => {
+      const assignment = assignments.find(
+        (a) => a.personId === personId && a.departmentId === departmentId
+      );
+
+      if (!assignment) throw new Error(`Assignment not found for person ${personId}`);
+
+      return {
+        ...assignment,
+        order: index
+      };
+    });
+
+    await db.assignments.bulkPut(updates);
+  };
+
   return {
     assignments,
     assignPersonToDepartment,
@@ -70,6 +100,7 @@ export const useAssignments = () => {
     getDepartmentsByPerson,
     getAssignmentCount,
     isPersonAssignedToDepartment,
-    unassignPersonFromAllDepartments
+    unassignPersonFromAllDepartments,
+    reorderPeopleInDepartment
   };
 };

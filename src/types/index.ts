@@ -25,6 +25,7 @@ export interface Assignment {
   id: string;
   personId: string;
   departmentId: string;
+  order: number;
   createdAt: Date;
 }
 

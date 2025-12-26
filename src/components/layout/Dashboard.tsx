@@ -8,7 +8,8 @@ import {
   useSensor,
   useSensors
 } from '@dnd-kit/core';
-import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
+import type { DragEndEvent, DragStartEvent, DropAnimation } from '@dnd-kit/core';
+import { defaultDropAnimation } from '@dnd-kit/core';
 import { Sidebar } from './Sidebar';
 import { DepartmentCanvas } from '../department/DepartmentCanvas';
 import { PersonCard } from '../person/PersonCard';
@@ -23,7 +24,7 @@ import '../../../src/styles/dashboard.css';
 
 export const Dashboard: React.FC = () => {
   const [activeDragItem, setActiveDragItem] = useState<DragItem | null>(null);
-  const { assignPersonToDepartment } = useAssignments();
+  const { assignPersonToDepartment, reorderPeopleInDepartment, getPeopleByDepartment } = useAssignments();
 
   // Configure sensors for drag and drop (mouse and touch)
   const sensors = useSensors(
@@ -58,10 +59,44 @@ export const Dashboard: React.FC = () => {
 
     if (!over) return;
 
+    // Handle person reordering within a department
+    if (typeof active.id === 'string' && active.id.startsWith('sortable-person-') && over.data.current?.type === 'Department') {
+      const departmentId = over.data.current.departmentId;
+      const draggedPersonId = active.id.replace('sortable-person-', '');
+
+      try {
+        // Get the current order of people in the department
+        const people = getPeopleByDepartment(departmentId);
+        const currentOrder = people.map((p) => p.id);
+
+        // Find the index of the dragged person
+        const draggedIndex = currentOrder.indexOf(draggedPersonId);
+
+        // Get the position to insert (based on over element)
+        let insertIndex = 0;
+        if (typeof over.id === 'string' && over.id.startsWith('sortable-person-')) {
+          const overPersonId = over.id.replace('sortable-person-', '');
+          insertIndex = currentOrder.indexOf(overPersonId);
+        }
+
+        if (draggedIndex !== -1 && draggedIndex !== insertIndex) {
+          // Reorder the array
+          const newOrder = currentOrder.filter((id) => id !== draggedPersonId);
+          newOrder.splice(insertIndex > draggedIndex ? insertIndex - 1 : insertIndex, 0, draggedPersonId);
+
+          // Update the order in the database
+          await reorderPeopleInDepartment(departmentId, newOrder);
+        }
+      } catch (error) {
+        console.error('Error reordering people:', error);
+      }
+      return;
+    }
+
     const activeData = active.data.current;
     const overData = over.data.current;
 
-    // Only handle person drag events
+    // Only handle person drag events from sidebar
     if (activeData?.type !== 'person' || !overData) return;
 
     const person = activeData.person as Person;
