@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCloudArrowUp, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { parseBackupFile, importDatabase } from '../../features/database';
 import type { DatabaseBackup, ImportOptions } from '../../features/database';
 import '../styles/database.css';

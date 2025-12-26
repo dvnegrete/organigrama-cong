@@ -1,4 +1,4 @@
-import type { DatabaseBackup, Person, Department, Assignment } from '../../types';
+import type { Person, Department, Assignment } from '../../types';
 
 // UUID v4 regex
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
