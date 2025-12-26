@@ -41,11 +41,7 @@ export const Department: React.FC<DepartmentProps> = ({ department, onDelete, dr
         width: department.size.width,
         height: department.size.height
       }}
-      className="rnd-container"
-      style={{
-        zIndex: 1,
-        cursor: 'grab'
-      }}
+      className="rnd-container cursor-grab z-index-base"
     >
       <div className="department">
         <DepartmentHeader department={department} onDelete={onDelete} />

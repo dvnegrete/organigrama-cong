@@ -28,7 +28,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
     <div className="modal-backdrop" onClick={onCancel}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <h3 className="modal-title">{title}</h3>
-        <p style={{ marginBottom: '20px', color: 'var(--color-text-secondary)' }}>
+        <p className="modal-subtitle">
           {message}
         </p>
         <div className="modal-actions">

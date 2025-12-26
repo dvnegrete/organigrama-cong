@@ -221,7 +221,7 @@ export const DatabaseImportDialog: React.FC<DatabaseImportDialogProps> = ({ isOp
             </button>
           )}
           {step === 'importing' && (
-            <span style={{ color: 'var(--color-text-secondary)', fontSize: '0.9rem' }}>
+            <span className="loading-text">
               ⏳ Procesando...
             </span>
           )}

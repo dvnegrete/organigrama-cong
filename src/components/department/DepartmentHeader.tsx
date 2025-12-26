@@ -62,10 +62,9 @@ export const DepartmentHeader: React.FC<DepartmentHeaderProps> = ({ department, 
             onChange={(e) => setName(e.target.value)}
             onBlur={handleSaveName}
             onKeyDown={handleKeyDown}
-            className="form-input"
+            className="form-input flex-grow"
             autoFocus
             onClick={(e) => e.stopPropagation()}
-            style={{ flex: 1 }}
           />
         ) : (
           <div

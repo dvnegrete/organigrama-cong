@@ -40,7 +40,7 @@ export const DepartmentPeople: React.FC<DepartmentPeopleProps> = ({ departmentId
   return (
     <div ref={setNodeRef} className={containerClass}>
       {people.length === 0 ? (
-        <div style={{ textAlign: 'center', fontSize: '12px' }}>
+        <div className="text-center text-small">
           Arrastra personas aquí
         </div>
       ) : (

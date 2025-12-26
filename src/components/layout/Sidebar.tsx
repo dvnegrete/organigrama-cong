@@ -19,7 +19,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ draggingPersonId }) => {
           <PersonForm />
         </div>
 
-        <div style={{ flex: 1, overflowY: 'auto', paddingBottom: '100px' }}>
+        <div className="flex-grow overflow-y-auto padding-bottom-lg">
           <PersonList draggingPersonId={draggingPersonId} />
         </div>
       </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { PersonCard } from './PersonCard';
+import { PersonFilter } from './PersonFilter';
 import { usePersons } from '../../hooks/usePersons';
 
 interface PersonListProps {
@@ -22,17 +22,7 @@ export const PersonList: React.FC<PersonListProps> = ({ draggingPersonId }) => {
 
   return (
     <div className="person-list">
-      <div className="person-list-header">Total personas: {persons.length}</div>
-      {persons.map((person, index) => (
-        <PersonCard
-          key={person.id}
-          person={person}
-          isDragging={draggingPersonId === person.id}
-          context="sidebar"
-          showDeleteButton={true}
-          personIndex={index + 1}
-        />
-      ))}
+      <PersonFilter persons={persons} draggingPersonId={draggingPersonId} />
     </div>
   );
 };

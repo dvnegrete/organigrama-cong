@@ -14,7 +14,7 @@ export const DepartmentCanvas: React.FC<DepartmentCanvasProps> = ({ draggingPers
 
   return (
     <div className="dashboard-canvas-container">
-      <div style={{ padding: '16px', borderBottom: '1px solid var(--color-border)', display: 'flex', gap: '12px', alignItems: 'center' }}>
+      <div className="top-toolbar">
         <CreateDepartmentButton containerRef={containerRef} />
         <DatabaseBackupModal />
       </div>

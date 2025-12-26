@@ -45,8 +45,7 @@ export const PersonForm: React.FC<PersonFormProps> = ({ onPersonAdded }) => {
       {!isExpanded ? (
         <button
           type="button"
-          className="btn btn-primary"
-          style={{ width: '100%' }}
+          className="btn btn-primary full-width"
           onClick={() => setIsExpanded(true)}
         >
           + Agregar Persona
@@ -84,19 +83,17 @@ export const PersonForm: React.FC<PersonFormProps> = ({ onPersonAdded }) => {
             />
           </div>
 
-          <div style={{ display: 'flex', gap: '8px' }}>
+          <div className="flex-row">
             <button
               type="submit"
-              className="btn btn-primary"
-              style={{ flex: 1 }}
+              className="btn btn-primary flex-grow"
               disabled={isLoading}
             >
               {isLoading ? 'Agregando...' : 'Agregar'}
             </button>
             <button
               type="button"
-              className="btn btn-secondary"
-              style={{ flex: 1 }}
+              className="btn btn-secondary flex-grow"
               onClick={() => setIsExpanded(false)}
               disabled={isLoading}
             >
