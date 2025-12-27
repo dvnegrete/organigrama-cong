@@ -8,11 +8,12 @@ import '../styles/database.css';
 interface DatabaseImportDialogProps {
   isOpen: boolean;
   onClose: () => void;
+  onImportSuccess?: () => void;
 }
 
 type DialogStep = 'file-select' | 'preview' | 'importing' | 'result';
 
-export const DatabaseImportDialog: React.FC<DatabaseImportDialogProps> = ({ isOpen, onClose }) => {
+export const DatabaseImportDialog: React.FC<DatabaseImportDialogProps> = ({ isOpen, onClose, onImportSuccess }) => {
   const [step, setStep] = useState<DialogStep>('file-select');
   const [backup, setBackup] = useState<DatabaseBackup | null>(null);
   const [importMode, setImportMode] = useState<'replace' | 'merge'>('merge');
@@ -66,8 +67,12 @@ export const DatabaseImportDialog: React.FC<DatabaseImportDialogProps> = ({ isOp
   };
 
   const handleClose = () => {
+    const wasSuccessful = step === 'result' && result?.success;
     handleReset();
     onClose();
+    if (wasSuccessful && onImportSuccess) {
+      onImportSuccess();
+    }
   };
 
   if (!isOpen) return null;
@@ -82,7 +87,7 @@ export const DatabaseImportDialog: React.FC<DatabaseImportDialogProps> = ({ isOp
 
   const isConfirmDisabled = isImporting || (step === 'file-select' && !backup);
   const showConfirmButton = step !== 'file-select' || backup;
-  const showCancelButton = step !== 'importing';
+  const showCancelButton = step !== 'importing' && step !== 'result';
 
   return (
     <div className="modal-backdrop" onClick={handleClose}>

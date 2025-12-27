@@ -65,6 +65,10 @@ export const DatabaseBackupModal: React.FC = () => {
       <DatabaseImportDialog
         isOpen={isImportDialogOpen}
         onClose={() => setIsImportDialogOpen(false)}
+        onImportSuccess={() => {
+          setIsImportDialogOpen(false);
+          setIsModalOpen(false);
+        }}
       />
     </>
   );
