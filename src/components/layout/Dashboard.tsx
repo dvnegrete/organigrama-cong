@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   DndContext,
   DragOverlay,
@@ -23,7 +23,19 @@ import '../../../src/styles/dashboard.css';
 
 export const Dashboard: React.FC = () => {
   const [activeDragItem, setActiveDragItem] = useState<DragItem | null>(null);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(() => {
+    const stored = localStorage.getItem('sidebarVisible');
+    return stored === null ? true : stored === 'true';
+  });
   const { assignPersonToDepartment, reorderPeopleInDepartment, getPeopleByDepartment } = useAssignments();
+
+  useEffect(() => {
+    localStorage.setItem('sidebarVisible', String(isSidebarVisible));
+  }, [isSidebarVisible]);
+
+  const toggleSidebar = () => {
+    setIsSidebarVisible(!isSidebarVisible);
+  };
 
   // Configure sensors for drag and drop (mouse and touch)
   const sensors = useSensors(
@@ -123,9 +135,18 @@ export const Dashboard: React.FC = () => {
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
     >
-      <div className="dashboard">
-        <Sidebar draggingPersonId={activeDragItem?.type === 'person' ? activeDragItem.person.id : null} />
-        <DepartmentCanvas draggingPersonId={activeDragItem?.type === 'person' ? activeDragItem.person.id : null} />
+      <div className={`dashboard ${!isSidebarVisible ? 'sidebar-hidden' : ''}`}>
+        {isSidebarVisible && (
+          <Sidebar
+            draggingPersonId={activeDragItem?.type === 'person' ? activeDragItem.person.id : null}
+            onToggleSidebar={toggleSidebar}
+          />
+        )}
+        <DepartmentCanvas
+          draggingPersonId={activeDragItem?.type === 'person' ? activeDragItem.person.id : null}
+          onToggleSidebar={toggleSidebar}
+          isSidebarVisible={isSidebarVisible}
+        />
       </div>
 
       <DragOverlay>
