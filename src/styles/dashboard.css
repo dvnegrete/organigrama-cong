@@ -22,6 +22,11 @@
   overflow: hidden;
 }
 
+/* Hide sidebar and show canvas when sidebar is hidden */
+.dashboard.sidebar-hidden .dashboard-sidebar {
+  display: none;
+}
+
 .dashboard.sidebar-hidden .dashboard-canvas-container {
   width: 100%;
 }
@@ -166,6 +171,13 @@
   color: var(--color-text);
 }
 
+/* Hide toggle button in canvas for desktop when sidebar is visible */
+@media (min-width: 769px) {
+  .dashboard:not(.sidebar-hidden) .top-toolbar .btn-toggle-sidebar {
+    display: none;
+  }
+}
+
 /* Department People List */
 .department-people {
   flex: 1;
@@ -194,6 +206,7 @@
 }
 
 .sidebar-header {
+  padding: var(--spacing-lg);
   border-bottom: 1px solid var(--color-border);
   background-color: var(--color-bg);
   display: flex;
@@ -206,7 +219,7 @@
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text);
-  margin-bottom: var(--spacing-md);
+  margin: 0;
 }
 
 .form-group {
@@ -489,27 +502,60 @@
     flex-direction: column;
   }
 
+  /* Hide sidebar title in mobile */
+  .sidebar-title {
+    display: none;
+  }
+
+  /* In mobile, show sidebar when not hidden */
   .dashboard-sidebar {
     width: 100%;
     border-right: none;
     border-bottom: 1px solid var(--color-border);
-    max-height: 40%;
+    order: 2;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  /* In mobile, show canvas when sidebar is hidden */
+  .dashboard-canvas-container {
+    order: 1;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  /* When sidebar is hidden on mobile, hide sidebar and show canvas */
+  .dashboard.sidebar-hidden .dashboard-sidebar {
+    display: none;
+  }
+
+  .dashboard.sidebar-hidden .dashboard-canvas-container {
+    display: flex;
+    order: 1;
+  }
+
+  /* When sidebar is visible on mobile, show sidebar and hide canvas */
+  .dashboard:not(.sidebar-hidden) .dashboard-canvas-container {
+    display: none;
   }
 
   .sidebar {
-    flex-direction: row;
+    flex-direction: column;
   }
 
   .sidebar-header {
-    flex: 1;
-    border-right: 1px solid var(--color-border);
-    border-bottom: none;
-    max-width: 200px;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+    padding: var(--spacing-md);
+    padding-right: var(--spacing-md);
   }
 
   .sidebar-content {
     flex: 1;
     padding: var(--spacing-md);
+    overflow-y: auto;
   }
 
   .department {

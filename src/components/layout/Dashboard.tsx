@@ -136,12 +136,10 @@ export const Dashboard: React.FC = () => {
       onDragCancel={handleDragCancel}
     >
       <div className={`dashboard ${!isSidebarVisible ? 'sidebar-hidden' : ''}`}>
-        {isSidebarVisible && (
-          <Sidebar
-            draggingPersonId={activeDragItem?.type === 'person' ? activeDragItem.person.id : null}
-            onToggleSidebar={toggleSidebar}
-          />
-        )}
+        <Sidebar
+          draggingPersonId={activeDragItem?.type === 'person' ? activeDragItem.person.id : null}
+          onToggleSidebar={toggleSidebar}
+        />
         <DepartmentCanvas
           draggingPersonId={activeDragItem?.type === 'person' ? activeDragItem.person.id : null}
           onToggleSidebar={toggleSidebar}
