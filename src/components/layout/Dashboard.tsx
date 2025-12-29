@@ -11,6 +11,9 @@ import {
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import { Sidebar } from './Sidebar';
 import { DepartmentCanvas } from '../department/DepartmentCanvas';
+import { OrganizationStructureView } from '../organization/OrganizationStructureView';
+import { MainMenu } from './MainMenu';
+import { DatabaseBackupModal } from '../database/DatabaseBackupModal';
 import { PersonCard } from '../person/PersonCard';
 import { useAssignments } from '../../hooks/useAssignments';
 import type { Person, DragItem } from '../../types';
@@ -27,14 +30,27 @@ export const Dashboard: React.FC = () => {
     const stored = localStorage.getItem('sidebarVisible');
     return stored === null ? true : stored === 'true';
   });
+  const [isStructureViewOpen, setIsStructureViewOpen] = useState(() => {
+    const stored = localStorage.getItem('structureViewOpen');
+    return stored === null ? false : stored === 'true';
+  });
+  const [isDatabaseModalOpen, setIsDatabaseModalOpen] = useState(false);
   const { assignPersonToDepartment, reorderPeopleInDepartment, getPeopleByDepartment } = useAssignments();
 
   useEffect(() => {
     localStorage.setItem('sidebarVisible', String(isSidebarVisible));
   }, [isSidebarVisible]);
 
+  useEffect(() => {
+    localStorage.setItem('structureViewOpen', String(isStructureViewOpen));
+  }, [isStructureViewOpen]);
+
   const toggleSidebar = () => {
     setIsSidebarVisible(!isSidebarVisible);
+  };
+
+  const toggleStructureView = () => {
+    setIsStructureViewOpen(!isStructureViewOpen);
   };
 
   // Configure sensors for drag and drop (mouse and touch)
@@ -135,16 +151,32 @@ export const Dashboard: React.FC = () => {
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
     >
-      <div className={`dashboard ${!isSidebarVisible ? 'sidebar-hidden' : ''}`}>
-        <Sidebar
-          draggingPersonId={activeDragItem?.type === 'person' ? activeDragItem.person.id : null}
-          onToggleSidebar={toggleSidebar}
-        />
-        <DepartmentCanvas
-          draggingPersonId={activeDragItem?.type === 'person' ? activeDragItem.person.id : null}
-          onToggleSidebar={toggleSidebar}
-          isSidebarVisible={isSidebarVisible}
-        />
+      <div className={`dashboard ${!isSidebarVisible ? 'sidebar-hidden' : ''} ${isStructureViewOpen ? 'structure-view-open' : ''}`}>
+        {isStructureViewOpen ? (
+          <>
+            {/* Show sidebar in desktop, hide in mobile */}
+            <div className="sidebar-for-structure">
+              <Sidebar
+                draggingPersonId={activeDragItem?.type === 'person' ? activeDragItem.person.id : null}
+              />
+            </div>
+            {/* Organization Structure View */}
+            <div className="structure-view-container">
+              <OrganizationStructureView />
+            </div>
+          </>
+        ) : (
+          <>
+            <Sidebar
+              draggingPersonId={activeDragItem?.type === 'person' ? activeDragItem.person.id : null}
+            />
+            <DepartmentCanvas
+              draggingPersonId={activeDragItem?.type === 'person' ? activeDragItem.person.id : null}
+              onToggleSidebar={toggleSidebar}
+              isSidebarVisible={isSidebarVisible}
+            />
+          </>
+        )}
       </div>
 
       <DragOverlay>
@@ -158,6 +190,18 @@ export const Dashboard: React.FC = () => {
           </div>
         ) : null}
       </DragOverlay>
+
+      <MainMenu
+        onToggleStructureView={toggleStructureView}
+        onToggleSidebar={toggleSidebar}
+        onOpenDatabaseModal={() => setIsDatabaseModalOpen(true)}
+        isSidebarVisible={isSidebarVisible}
+        isStructureViewOpen={isStructureViewOpen}
+      />
+
+      {isDatabaseModalOpen && (
+        <DatabaseBackupModal onClose={() => setIsDatabaseModalOpen(false)} />
+      )}
     </DndContext>
   );
 };

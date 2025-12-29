@@ -1,36 +1,24 @@
 import React, { useRef } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { Department } from './Department';
 import { CreateDepartmentButton } from './CreateDepartmentButton';
-import { DatabaseBackupModal } from '../database/DatabaseBackupModal';
 import { useDepartments } from '../../hooks/useDepartments';
 
 interface DepartmentCanvasProps {
   draggingPersonId?: string | null;
   onToggleSidebar: () => void;
   isSidebarVisible: boolean;
+  onToggleStructureView?: () => void;
 }
 
-export const DepartmentCanvas: React.FC<DepartmentCanvasProps> = ({ draggingPersonId, onToggleSidebar, isSidebarVisible }) => {
+export const DepartmentCanvas: React.FC<DepartmentCanvasProps> = ({ draggingPersonId }) => {
   const { departments } = useDepartments();
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   return (
     <div className="dashboard-canvas-container">
+      <h2>Panel de trabajo</h2>
       <div className="top-toolbar">
-        {!isSidebarVisible && (
-          <button
-            className="btn-toggle-sidebar"
-            onClick={onToggleSidebar}
-            title="Mostrar panel lateral"
-            aria-label="Mostrar panel lateral"
-          >
-            <FontAwesomeIcon icon={faBars} />
-          </button>
-        )}
         <CreateDepartmentButton containerRef={containerRef} />
-        <DatabaseBackupModal />
       </div>
 
       <div className="department-canvas" ref={containerRef}>

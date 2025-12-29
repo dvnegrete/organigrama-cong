@@ -31,6 +31,24 @@
   width: 100%;
 }
 
+/* Structure View */
+.sidebar-for-structure {
+  display: none;
+}
+
+.structure-view-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+@media (min-width: 769px) {
+  .dashboard.structure-view-open .sidebar-for-structure {
+    display: flex;
+  }
+}
+
 /* Canvas */
 .department-canvas {
   flex: 1;
@@ -213,6 +231,40 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--spacing-md);
+  flex-shrink: 0;
+}
+
+.sidebar-header-buttons {
+  display: flex;
+  gap: var(--spacing-sm);
+  align-items: center;
+}
+
+/* Toggle buttons in toolbar */
+.toolbar-toggle-buttons {
+  display: none;
+  gap: var(--spacing-sm);
+  align-items: center;
+}
+
+.btn-toggle-structure {
+  background: transparent;
+  border: none;
+  padding: var(--spacing-xs);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-lg);
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.btn-toggle-structure:hover {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text);
 }
 
 .sidebar-title {
@@ -502,6 +554,16 @@
     flex-direction: column;
   }
 
+  /* Show toggle buttons in toolbar on mobile */
+  .toolbar-toggle-buttons {
+    display: flex;
+  }
+
+  /* Hide sidebar header buttons in mobile */
+  .sidebar-header-buttons {
+    display: none;
+  }
+
   /* Hide sidebar title in mobile */
   .sidebar-title {
     display: none;
@@ -561,6 +623,29 @@
   .department {
     width: 280px !important;
     height: 350px !important;
+  }
+
+  /* Structure View in Mobile */
+  .dashboard.structure-view-open {
+    flex-direction: column;
+  }
+
+  .dashboard.structure-view-open .sidebar-for-structure {
+    display: none;
+  }
+
+  .dashboard.structure-view-open .dashboard-sidebar {
+    display: none;
+  }
+
+  .dashboard.structure-view-open .dashboard-canvas-container {
+    display: none;
+  }
+
+  .dashboard.structure-view-open .structure-view-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
   }
 }
 
