@@ -1,0 +1,118 @@
+/* Workspace Selector */
+.workspace-selector {
+  position: relative;
+  width: 100%;
+}
+
+.workspace-selector-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--spacing-md);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  transition: var(--transition-fast);
+}
+
+.workspace-selector-toggle:hover {
+  background-color: var(--color-bg-tertiary);
+  border-color: var(--color-primary);
+}
+
+.workspace-selector-toggle:active {
+  background-color: var(--color-bg-secondary);
+}
+
+.workspace-selector-name {
+  flex: 1;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.workspace-selector-icon {
+  margin-left: var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  color: var(--color-primary);
+}
+
+/* Workspace Dropdown */
+.workspace-dropdown {
+  position: absolute;
+  top: calc(100% + var(--spacing-sm));
+  left: 0;
+  right: 0;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  z-index: var(--z-index-dropdown);
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.workspace-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.workspace-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--spacing-md);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  text-align: left;
+  transition: var(--transition-fast);
+}
+
+.workspace-item:last-child {
+  border-bottom: none;
+}
+
+.workspace-item:hover {
+  background-color: var(--color-bg-tertiary);
+}
+
+.workspace-item.active {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.workspace-item-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.workspace-check-icon {
+  margin-left: var(--spacing-md);
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+}
+
+/* Workspace Backdrop */
+.workspace-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: calc(var(--z-index-dropdown) - 1);
+}

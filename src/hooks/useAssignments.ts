@@ -3,14 +3,26 @@ import { db } from '../db/schema';
 import type { Assignment } from '../types';
 import { generateUUID } from '../utils/uuid';
 import { usePersons } from './usePersons';
+import { useWorkspaceContext } from '../contexts/WorkspaceContext';
 
 export const useAssignments = () => {
   const { persons } = usePersons();
+  const { activeWorkspaceId } = useWorkspaceContext();
 
-  // Get all assignments
-  const assignments = useLiveQuery(() => db.assignments.toArray()) || [];
+  // Get all assignments for active workspace
+  const assignments = useLiveQuery(() => {
+    if (!activeWorkspaceId) return [];
+    return db.assignments
+      .where('workspaceId')
+      .equals(activeWorkspaceId)
+      .toArray();
+  }, [activeWorkspaceId]) || [];
 
   const assignPersonToDepartment = async (personId: string, departmentId: string) => {
+    if (!activeWorkspaceId) {
+      throw new Error('No hay espacio de trabajo activo');
+    }
+
     // Check if assignment already exists
     const existing = await db.assignments
       .where('[personId+departmentId]')
@@ -19,11 +31,9 @@ export const useAssignments = () => {
 
     if (existing) return; // Already assigned
 
-    // Get the current max order for this department
-    const departmentAssignments = await db.assignments
-      .where('departmentId')
-      .equals(departmentId)
-      .toArray();
+    // Get the current max order for this department in active workspace
+    const departmentAssignments = assignments
+      .filter((a) => a.departmentId === departmentId);
 
     const maxOrder = departmentAssignments.length > 0
       ? Math.max(...departmentAssignments.map(a => a.order || 0))
@@ -31,6 +41,7 @@ export const useAssignments = () => {
 
     const assignment: Assignment = {
       id: generateUUID(),
+      workspaceId: activeWorkspaceId,
       personId,
       departmentId,
       order: maxOrder + 1,

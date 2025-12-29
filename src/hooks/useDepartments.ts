@@ -2,6 +2,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../db/schema';
 import type { Department } from '../types';
 import { generateUUID } from '../utils/uuid';
+import { useWorkspaceContext } from '../contexts/WorkspaceContext';
 import {
   DEFAULT_DEPARTMENT_WIDTH,
   DEFAULT_DEPARTMENT_HEIGHT,
@@ -10,16 +11,29 @@ import {
 } from '../utils/constants';
 
 export const useDepartments = () => {
-  // Get all departments
-  const departments = useLiveQuery(() => db.departments.toArray()) || [];
+  const { activeWorkspaceId } = useWorkspaceContext();
+
+  // Get all departments for active workspace
+  const departments = useLiveQuery(() => {
+    if (!activeWorkspaceId) return [];
+    return db.departments
+      .where('workspaceId')
+      .equals(activeWorkspaceId)
+      .toArray();
+  }, [activeWorkspaceId]) || [];
 
   const createDepartment = async (
     name: string = 'Nuevo Departamento',
     position?: { x: number; y: number }
   ) => {
+    if (!activeWorkspaceId) {
+      throw new Error('No hay espacio de trabajo activo');
+    }
+
     const now = new Date();
     const department: Department = {
       id: generateUUID(),
+      workspaceId: activeWorkspaceId,
       name,
       position: position || {
         x: DEFAULT_DEPARTMENT_START_X,

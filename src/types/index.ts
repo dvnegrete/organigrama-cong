@@ -1,5 +1,15 @@
+export interface Workspace {
+  id: string;
+  name: string;
+  description: string;
+  createdAt: Date;
+  updatedAt: Date;
+  isDefault?: boolean;
+}
+
 export interface Person {
   id: string;
+  workspaceId: string;
   name: string;
   role: string;
   createdAt: Date;
@@ -8,6 +18,7 @@ export interface Person {
 
 export interface Department {
   id: string;
+  workspaceId: string;
   name: string;
   position: {
     x: number;
@@ -23,6 +34,7 @@ export interface Department {
 
 export interface Assignment {
   id: string;
+  workspaceId: string;
   personId: string;
   departmentId: string;
   order: number;

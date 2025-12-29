@@ -14,6 +14,7 @@ import { DepartmentCanvas } from '../department/DepartmentCanvas';
 import { OrganizationStructureView } from '../organization/OrganizationStructureView';
 import { MainMenu } from './MainMenu';
 import { DatabaseBackupModal } from '../database/DatabaseBackupModal';
+import { WorkspaceManager } from '../workspace/WorkspaceManager';
 import { PersonCard } from '../person/PersonCard';
 import { useAssignments } from '../../hooks/useAssignments';
 import type { Person, DragItem } from '../../types';
@@ -40,6 +41,7 @@ export const Dashboard: React.FC = () => {
     return stored === null ? true : stored === 'true';
   });
   const [isDatabaseModalOpen, setIsDatabaseModalOpen] = useState(false);
+  const [isWorkspaceManagerOpen, setIsWorkspaceManagerOpen] = useState(false);
   const { assignPersonToDepartment, reorderPeopleInDepartment, getPeopleByDepartment } = useAssignments();
 
   useEffect(() => {
@@ -200,12 +202,17 @@ export const Dashboard: React.FC = () => {
         onToggleStructureView={toggleStructureView}
         onToggleSidebar={toggleSidebar}
         onOpenDatabaseModal={() => setIsDatabaseModalOpen(true)}
+        onOpenWorkspaceManager={() => setIsWorkspaceManagerOpen(true)}
         isSidebarVisible={isSidebarVisible}
         isStructureViewOpen={isStructureViewOpen}
       />
 
       {isDatabaseModalOpen && (
         <DatabaseBackupModal onClose={() => setIsDatabaseModalOpen(false)} />
+      )}
+
+      {isWorkspaceManagerOpen && (
+        <WorkspaceManager onClose={() => setIsWorkspaceManagerOpen(false)} />
       )}
     </DndContext>
   );

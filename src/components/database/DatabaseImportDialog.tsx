@@ -1,8 +1,9 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { parseBackupFile, importDatabase } from '../../features/database';
+import { parseBackupFile, importDatabase, importToWorkspace, importAllWorkspaces } from '../../features/database';
 import type { DatabaseBackup, ImportOptions } from '../../features/database';
+import { useWorkspaces } from '../../hooks/useWorkspaces';
 import '../styles/database.css';
 
 interface DatabaseImportDialogProps {
@@ -11,16 +12,27 @@ interface DatabaseImportDialogProps {
   onImportSuccess?: () => void;
 }
 
-type DialogStep = 'file-select' | 'preview' | 'importing' | 'result';
+type DialogStep = 'file-select' | 'preview' | 'destination' | 'importing' | 'result';
 
 export const DatabaseImportDialog: React.FC<DatabaseImportDialogProps> = ({ isOpen, onClose, onImportSuccess }) => {
   const [step, setStep] = useState<DialogStep>('file-select');
   const [backup, setBackup] = useState<DatabaseBackup | null>(null);
   const [importMode, setImportMode] = useState<'replace' | 'merge'>('merge');
+  const [destinationMode, setDestinationMode] = useState<'current' | 'new'>('current');
+  const [newWorkspaceName, setNewWorkspaceName] = useState('');
+  const [selectedWorkspaceId, setSelectedWorkspaceId] = useState<string>('');
   const [isImporting, setIsImporting] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { workspaces, activeWorkspace } = useWorkspaces();
+
+  // Set initial workspace ID when workspaces change
+  useEffect(() => {
+    if (selectedWorkspaceId === '' && workspaces.length > 0) {
+      setSelectedWorkspaceId(activeWorkspace?.id || workspaces[0].id);
+    }
+  }, [workspaces, activeWorkspace, selectedWorkspaceId]);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -44,21 +56,60 @@ export const DatabaseImportDialog: React.FC<DatabaseImportDialogProps> = ({ isOp
     setError(null);
     setStep('importing');
 
-    const options: ImportOptions = {
-      mode: importMode,
-      clearBefore: importMode === 'replace'
-    };
+    try {
+      let importResult;
 
-    const importResult = await importDatabase(backup, options);
-    setResult(importResult);
-    setStep('result');
-    setIsImporting(false);
+      // Check if this is a multi-workspace export (Todos los espacios)
+      if (backup.isMultiWorkspaceExport) {
+        importResult = await importAllWorkspaces(backup);
+      }
+      // Check if this is a single workspace export and we're importing to a workspace
+      else if (backup.isWorkspaceExport || destinationMode === 'new' || destinationMode === 'current') {
+        const options: ImportOptions = {
+          mode: importMode,
+          clearBefore: importMode === 'replace',
+          createNewWorkspace: destinationMode === 'new',
+          newWorkspaceName: destinationMode === 'new' ? newWorkspaceName : undefined,
+          targetWorkspaceId: destinationMode === 'current' ? selectedWorkspaceId : undefined
+        };
+        importResult = await importToWorkspace(backup, options);
+      } else {
+        // Full database import (backward compatible with v1.0)
+        const options: ImportOptions = {
+          mode: importMode,
+          clearBefore: importMode === 'replace'
+        };
+        importResult = await importDatabase(backup, options);
+      }
+
+      setResult(importResult);
+      setStep('result');
+
+      // Close modal automatically after successful import
+      if (importResult.success) {
+        setTimeout(() => {
+          const wasSuccessful = importResult.success;
+          handleReset();
+          onClose();
+          if (wasSuccessful && onImportSuccess) {
+            onImportSuccess();
+          }
+        }, 2000);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error during import');
+      setStep('preview');
+    } finally {
+      setIsImporting(false);
+    }
   };
 
   const handleReset = () => {
     setStep('file-select');
     setBackup(null);
     setImportMode('merge');
+    setDestinationMode('current');
+    setNewWorkspaceName('');
     setResult(null);
     setError(null);
     if (fileInputRef.current) {
@@ -79,13 +130,25 @@ export const DatabaseImportDialog: React.FC<DatabaseImportDialogProps> = ({ isOp
 
   const handleConfirm = () => {
     if (step === 'preview') {
+      // If it's a multi-workspace export, import directly
+      if (backup?.isMultiWorkspaceExport) {
+        handleImport();
+      }
+      // If it's a single workspace export, go to destination selection
+      else if (backup?.isWorkspaceExport) {
+        setStep('destination');
+      } else {
+        handleImport();
+      }
+    } else if (step === 'destination') {
       handleImport();
     } else if (step === 'result') {
       handleClose();
     }
   };
 
-  const isConfirmDisabled = isImporting || (step === 'file-select' && !backup);
+  const isDestinationValid = destinationMode === 'new' && !newWorkspaceName.trim() ? false : true;
+  const isConfirmDisabled = isImporting || (step === 'file-select' && !backup) || (step === 'destination' && !isDestinationValid);
   const showConfirmButton = step !== 'file-select' || backup;
   const showCancelButton = step !== 'importing' && step !== 'result';
 
@@ -121,6 +184,18 @@ export const DatabaseImportDialog: React.FC<DatabaseImportDialogProps> = ({ isOp
         {step === 'preview' && backup && (
           <div className="import-step">
             <h3>Vista Previa del Backup</h3>
+
+            {backup.isMultiWorkspaceExport && backup.data.workspaces && (
+              <div className="workspace-import-info">
+                <strong>Múltiples espacios de trabajo:</strong> Se importarán {backup.data.workspaces.length} espacios
+                <ul style={{ margin: '0.5rem 0 0 1.5rem', padding: 0 }}>
+                  {backup.data.workspaces.map((ws) => (
+                    <li key={ws.id}>{ws.name}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             <div className="preview-stats">
               <div className="stat">
                 <strong>Personas:</strong> {backup.data.persons.length}
@@ -161,9 +236,64 @@ export const DatabaseImportDialog: React.FC<DatabaseImportDialogProps> = ({ isOp
 
             {importMode === 'replace' && (
               <div className="warning-message">
-                ⚠️ Esto eliminará TODOS los datos actuales. Esta acción no se puede deshacer.
+                ⚠️ Esto eliminará TODOS los datos del espacio de trabajo. Esta acción no se puede deshacer.
               </div>
             )}
+          </div>
+        )}
+
+        {step === 'destination' && backup?.isWorkspaceExport && (
+          <div className="import-step">
+            <h3>Seleccionar Espacio de Trabajo Destino</h3>
+            {backup.workspaceName && (
+              <div className="source-info">
+                <strong>Fuente:</strong> {backup.workspaceName} (exportado {new Date(backup.exportedAt).toLocaleString()})
+              </div>
+            )}
+
+            <div className="destination-options">
+              <label className="destination-option">
+                <input
+                  type="radio"
+                  name="destination"
+                  value="current"
+                  checked={destinationMode === 'current'}
+                  onChange={() => setDestinationMode('current')}
+                />
+                <div className="option-content">
+                  <strong>Importar al espacio actual</strong>
+                  {activeWorkspace && <p>{activeWorkspace.name}</p>}
+                  {importMode === 'replace' && (
+                    <p style={{ color: '#e74c3c', fontSize: '0.9em' }}>
+                      ⚠️ Se reemplazarán todos los datos existentes en este espacio
+                    </p>
+                  )}
+                </div>
+              </label>
+
+              <label className="destination-option">
+                <input
+                  type="radio"
+                  name="destination"
+                  value="new"
+                  checked={destinationMode === 'new'}
+                  onChange={() => setDestinationMode('new')}
+                />
+                <div className="option-content">
+                  <strong>Crear nuevo espacio de trabajo</strong>
+                  {destinationMode === 'new' && (
+                    <input
+                      type="text"
+                      placeholder="Nombre del nuevo espacio (ej: Copia de Mi Organigrama)"
+                      value={newWorkspaceName}
+                      onChange={(e) => setNewWorkspaceName(e.target.value)}
+                      className="workspace-name-input"
+                      autoFocus
+                    />
+                  )}
+                </div>
+              </label>
+            </div>
           </div>
         )}
 
@@ -178,6 +308,11 @@ export const DatabaseImportDialog: React.FC<DatabaseImportDialogProps> = ({ isOp
             {result.success ? (
               <div className="success-result">
                 <h3>✅ Importación Completada</h3>
+                {result.summary?.workspaceName && (
+                  <div className="workspace-import-info">
+                    <strong>Espacio de trabajo:</strong> {result.summary.workspaceName}
+                  </div>
+                )}
                 <div className="result-stats">
                   <div>Personas importadas: {result.summary?.personsImported || 0}</div>
                   <div>Departamentos importados: {result.summary?.departmentsImported || 0}</div>
@@ -220,9 +355,9 @@ export const DatabaseImportDialog: React.FC<DatabaseImportDialogProps> = ({ isOp
             <button
               onClick={handleConfirm}
               disabled={isConfirmDisabled}
-              className={`btn ${step === 'preview' && importMode === 'replace' ? 'btn-danger' : 'btn-primary'}`}
+              className={`btn ${(step === 'preview' || step === 'destination') && importMode === 'replace' ? 'btn-danger' : 'btn-primary'}`}
             >
-              {step === 'preview' ? 'Importar' : step === 'result' ? 'Cerrar' : 'Siguiente'}
+              {step === 'preview' ? (backup?.isMultiWorkspaceExport ? 'Importar' : backup?.isWorkspaceExport ? 'Siguiente' : 'Importar') : step === 'destination' ? 'Importar' : step === 'result' ? 'Cerrar' : 'Siguiente'}
             </button>
           )}
           {step === 'importing' && (

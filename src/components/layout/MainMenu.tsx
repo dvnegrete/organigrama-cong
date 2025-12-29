@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faList, faEye, faEyeSlash, faDatabase } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faList, faEye, faEyeSlash, faDatabase, faLayerGroup } from '@fortawesome/free-solid-svg-icons';
 import '../../styles/main-menu.css';
 
 interface MainMenuProps {
   onToggleStructureView: () => void;
   onToggleSidebar: () => void;
   onOpenDatabaseModal: () => void;
+  onOpenWorkspaceManager: () => void;
   isSidebarVisible: boolean;
   isStructureViewOpen: boolean;
 }
@@ -15,6 +16,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
   onToggleStructureView,
   onToggleSidebar,
   onOpenDatabaseModal,
+  onOpenWorkspaceManager,
   isSidebarVisible,
   isStructureViewOpen
 }) => {
@@ -72,6 +74,14 @@ export const MainMenu: React.FC<MainMenuProps> = ({
           >
             <FontAwesomeIcon icon={faDatabase} className="menu-icon" />
             <span>Importar/Exportar Base de Datos</span>
+          </button>
+
+          <button
+            className="menu-item"
+            onClick={() => handleMenuItemClick(onOpenWorkspaceManager)}
+          >
+            <FontAwesomeIcon icon={faLayerGroup} className="menu-icon" />
+            <span>Gestionar Espacios de Trabajo</span>
           </button>
         </div>
       )}
