@@ -28,11 +28,16 @@ export const Dashboard: React.FC = () => {
   const [activeDragItem, setActiveDragItem] = useState<DragItem | null>(null);
   const [isSidebarVisible, setIsSidebarVisible] = useState(() => {
     const stored = localStorage.getItem('sidebarVisible');
-    return stored === null ? true : stored === 'true';
+    if (stored !== null) {
+      return stored === 'true';
+    }
+    // Default: visible on desktop, hidden on mobile
+    const isDesktop = window.matchMedia('(min-width: 769px)').matches;
+    return isDesktop;
   });
   const [isStructureViewOpen, setIsStructureViewOpen] = useState(() => {
     const stored = localStorage.getItem('structureViewOpen');
-    return stored === null ? false : stored === 'true';
+    return stored === null ? true : stored === 'true';
   });
   const [isDatabaseModalOpen, setIsDatabaseModalOpen] = useState(false);
   const { assignPersonToDepartment, reorderPeopleInDepartment, getPeopleByDepartment } = useAssignments();
