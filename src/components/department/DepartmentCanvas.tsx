@@ -16,9 +16,11 @@ export const DepartmentCanvas: React.FC<DepartmentCanvasProps> = ({ draggingPers
 
   return (
     <div className="dashboard-canvas-container">
-      <h2>Panel de trabajo</h2>
-      <div className="top-toolbar">
-        <CreateDepartmentButton containerRef={containerRef} />
+      <div className='dashboard-canvas-header'>
+        <h2>Tablero - Editar Departamentos</h2>
+        <div className="top-toolbar">
+          <CreateDepartmentButton containerRef={containerRef} />
+        </div>
       </div>
 
       <div className="department-canvas" ref={containerRef}>

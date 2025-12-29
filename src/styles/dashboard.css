@@ -22,6 +22,18 @@
   overflow: hidden;
 }
 
+.dashboard-canvas-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: var(--spacing-sm);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dashboard-canvas-header h2 {
+  font-size: var(--font-size-lg);
+}
+
 /* Hide sidebar and show canvas when sidebar is hidden */
 .dashboard.sidebar-hidden .dashboard-sidebar {
   display: none;
@@ -191,7 +203,7 @@
 
 /* Hide toggle button in canvas for desktop when sidebar is visible */
 @media (min-width: 769px) {
-  .dashboard:not(.sidebar-hidden) .top-toolbar .btn-toggle-sidebar {
+  .dashboard:not(.sidebar-hidden) .btn-toggle-sidebar {
     display: none;
   }
 }
@@ -224,7 +236,7 @@
 }
 
 .sidebar-header {
-  padding: var(--spacing-lg);
+  padding: var(--spacing-sm);
   border-bottom: 1px solid var(--color-border);
   background-color: var(--color-bg);
   display: flex;
@@ -756,14 +768,6 @@
 
 .z-index-base {
   z-index: 1;
-}
-
-.top-toolbar {
-  padding: 16px;
-  border-bottom: 1px solid var(--color-border);
-  display: flex;
-  gap: 12px;
-  align-items: center;
 }
 
 .person-list-header {
