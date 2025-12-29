@@ -38,7 +38,7 @@
 .department-structure-item {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  background-color: var(--color-bg);
+  background-color: var(--color-bg-tertiary);
   overflow: hidden;
   transition: var(--transition-fast);
   width: 440px;
@@ -125,6 +125,7 @@
   background-color: var(--color-bg);
   border-radius: var(--radius-sm);
   border-left: 3px solid var(--color-primary-light);
+  border-bottom: 2px solid var(--color-primary-light);
   transition: var(--transition-fast);
 }
 

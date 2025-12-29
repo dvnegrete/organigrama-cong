@@ -70,7 +70,7 @@ export const PersonForm: React.FC<PersonFormProps> = ({ onPersonAdded }) => {
 
           <div className="form-group">
             <label className="form-label" htmlFor="person-role">
-              Privilegio
+              Privilegio/Rol
             </label>
             <input
               id="person-role"

@@ -44,8 +44,11 @@ export const MainMenu: React.FC<MainMenuProps> = ({
             onClick={() => handleMenuItemClick(onToggleStructureView)}
           >
             <FontAwesomeIcon icon={faList} className="menu-icon" />
-            <span>Ver Estructura Organizacional</span>
-            {isStructureViewOpen && <span className="menu-badge">Activo</span>}
+            <span>
+              {isStructureViewOpen
+                ? 'Ver Tablero (Editar)'
+                : 'Ver Estructura Organizacional'}
+            </span>
           </button>
 
           <button

@@ -13,8 +13,8 @@ export const OrganizationStructureView: React.FC = () => {
   );
 
   useEffect(() => {
-    // Initialize all departments as expanded when they change
-    setExpandedDepartments(new Set(departments.map(d => d.id)));
+    // Initialize all departments as collapsed when they change
+    setExpandedDepartments(new Set());
   }, [departments]);
 
   const toggleDepartment = (departmentId: string) => {
