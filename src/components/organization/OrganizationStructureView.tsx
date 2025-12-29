@@ -3,13 +3,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { useDepartments } from '../../hooks/useDepartments';
 import { useAssignments } from '../../hooks/useAssignments';
-import { usePersons } from '../../hooks/usePersons';
 import '../styles/organization.css';
 
 export const OrganizationStructureView: React.FC = () => {
   const { departments } = useDepartments();
   const { getPeopleByDepartment } = useAssignments();
-  const { persons } = usePersons();
   const [expandedDepartments, setExpandedDepartments] = useState<Set<string>>(
     new Set()
   );
