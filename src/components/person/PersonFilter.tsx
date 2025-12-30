@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFilter } from '@fortawesome/free-solid-svg-icons';
+import { Filter } from 'lucide-react';
 import type { PersonWithDepartments } from '../../types';
 import { PersonCard } from './PersonCard';
 import '../../styles/dashboard.css';
@@ -32,7 +31,7 @@ export const PersonFilter: React.FC<PersonFilterProps> = ({ persons, draggingPer
             className={`btn-filter ${showFilter ? 'active' : ''}`}
             title={showFilter ? 'Ocultar filtro' : 'Mostrar filtro'}
           >
-            <FontAwesomeIcon icon={faFilter} />
+            <Filter size={16} />
           </button>
         </div>
         {showFilter && (

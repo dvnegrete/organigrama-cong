@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCloudArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { CloudDownload } from 'lucide-react';
 import { exportDatabase, downloadBackup, exportWorkspace, exportAllWorkspaces } from '../../features/database';
 import { useWorkspaces } from '../../hooks/useWorkspaces';
 import '../styles/database.css';
@@ -86,7 +85,7 @@ export const DatabaseBackupButton: React.FC = () => {
         className="btn-export"
         title="Export database as JSON file"
       >
-        <FontAwesomeIcon icon={faCloudArrowDown} />
+        <CloudDownload size={16} />
         {isLoading ? ' Exportando...' : ' Exportar'}
       </button>
 

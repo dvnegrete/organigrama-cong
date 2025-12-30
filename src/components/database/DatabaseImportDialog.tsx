@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { X } from 'lucide-react';
 import { parseBackupFile, importDatabase, importToWorkspace, importAllWorkspaces } from '../../features/database';
 import type { DatabaseBackup, ImportOptions } from '../../features/database';
 import { useWorkspaces } from '../../hooks/useWorkspaces';
@@ -162,7 +161,7 @@ export const DatabaseImportDialog: React.FC<DatabaseImportDialogProps> = ({ isOp
             onClick={handleClose}
             title="Cerrar"
           >
-            <FontAwesomeIcon icon={faTimes} />
+            <X size={20} />
           </button>
         </div>
 

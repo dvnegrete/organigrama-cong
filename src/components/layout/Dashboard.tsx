@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import {
   DndContext,
   DragOverlay,
@@ -11,11 +11,13 @@ import {
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import { Sidebar } from './Sidebar';
 import { DepartmentCanvas } from '../department/DepartmentCanvas';
-import { OrganizationStructureView } from '../organization/OrganizationStructureView';
 import { MainMenu } from './MainMenu';
-import { DatabaseBackupModal } from '../database/DatabaseBackupModal';
-import { WorkspaceManager } from '../workspace/WorkspaceManager';
 import { PersonCard } from '../person/PersonCard';
+
+// Lazy load heavy modals
+const OrganizationStructureView = lazy(() => import('../organization/OrganizationStructureView').then(m => ({ default: m.OrganizationStructureView })));
+const DatabaseBackupModal = lazy(() => import('../database/DatabaseBackupModal').then(m => ({ default: m.DatabaseBackupModal })));
+const WorkspaceManager = lazy(() => import('../workspace/WorkspaceManager').then(m => ({ default: m.WorkspaceManager })));
 import { useAssignments } from '../../hooks/useAssignments';
 import type { Person, DragItem } from '../../types';
 import {
@@ -169,7 +171,9 @@ export const Dashboard: React.FC = () => {
             </div>
             {/* Organization Structure View */}
             <div className="structure-view-container">
-              <OrganizationStructureView />
+              <Suspense fallback={<div className="loading-fallback">Cargando estructura...</div>}>
+                <OrganizationStructureView />
+              </Suspense>
             </div>
           </>
         ) : (
@@ -208,11 +212,15 @@ export const Dashboard: React.FC = () => {
       />
 
       {isDatabaseModalOpen && (
-        <DatabaseBackupModal onClose={() => setIsDatabaseModalOpen(false)} />
+        <Suspense fallback={<div className="loading-fallback">Cargando modal...</div>}>
+          <DatabaseBackupModal onClose={() => setIsDatabaseModalOpen(false)} />
+        </Suspense>
       )}
 
       {isWorkspaceManagerOpen && (
-        <WorkspaceManager onClose={() => setIsWorkspaceManagerOpen(false)} />
+        <Suspense fallback={<div className="loading-fallback">Cargando gestor de espacios...</div>}>
+          <WorkspaceManager onClose={() => setIsWorkspaceManagerOpen(false)} />
+        </Suspense>
       )}
     </DndContext>
   );

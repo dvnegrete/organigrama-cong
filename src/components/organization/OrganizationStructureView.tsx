@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useDepartments } from '../../hooks/useDepartments';
 import { useAssignments } from '../../hooks/useAssignments';
 import '../styles/organization.css';
@@ -54,10 +53,7 @@ export const OrganizationStructureView: React.FC = () => {
                     onClick={() => toggleDepartment(department.id)}
                   >
                     <div className="department-structure-title">
-                      <FontAwesomeIcon
-                        icon={isExpanded ? faChevronUp : faChevronDown}
-                        className="chevron-icon"
-                      />
+                      {isExpanded ? <ChevronUp size={16} className="chevron-icon" /> : <ChevronDown size={16} className="chevron-icon" />}
                       <span className="department-name">{department.name}</span>
                       <span className="department-counter">
                         {deptPeople.length}

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown, faChevronUp, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { ChevronDown, ChevronUp, Check } from 'lucide-react';
 import { useWorkspaces } from '../../hooks/useWorkspaces';
 import './workspace-selector.css';
 
@@ -23,10 +22,7 @@ export const WorkspaceSelector: React.FC = () => {
         <span className="workspace-selector-name">
           {activeWorkspace?.name || 'Seleccionar...'}
         </span>
-        <FontAwesomeIcon
-          icon={isExpanded ? faChevronUp : faChevronDown}
-          className="workspace-selector-icon"
-        />
+        {isExpanded ? <ChevronUp size={16} className="workspace-selector-icon" /> : <ChevronDown size={16} className="workspace-selector-icon" />}
       </button>
 
       {isExpanded && (
@@ -42,7 +38,7 @@ export const WorkspaceSelector: React.FC = () => {
               >
                 <span className="workspace-item-name">{workspace.name}</span>
                 {workspace.id === activeWorkspace?.id && (
-                  <FontAwesomeIcon icon={faCheck} className="workspace-check-icon" />
+                  <Check size={16} className="workspace-check-icon" />
                 )}
               </button>
             ))}

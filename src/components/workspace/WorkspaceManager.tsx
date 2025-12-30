@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faPencil, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { Plus, Pencil, Trash2 } from 'lucide-react';
 import { useWorkspaces } from '../../hooks/useWorkspaces';
 import './workspace-manager.css';
 
@@ -136,7 +135,7 @@ export const WorkspaceManager: React.FC<WorkspaceManagerProps> = ({ onClose }) =
               onClick={handleCreateWorkspace}
               disabled={loading || !newWorkspaceName.trim()}
             >
-              <FontAwesomeIcon icon={faPlus} />
+              <Plus size={16} />
               Crear Espacio de Trabajo
             </button>
           </div>
@@ -214,7 +213,7 @@ export const WorkspaceManager: React.FC<WorkspaceManagerProps> = ({ onClose }) =
                             disabled={loading}
                             title="Renombrar"
                           >
-                            <FontAwesomeIcon icon={faPencil} />
+                            <Pencil size={16} />
                           </button>
 
                           {deleteConfirmId === workspace.id ? (
@@ -247,7 +246,7 @@ export const WorkspaceManager: React.FC<WorkspaceManagerProps> = ({ onClose }) =
                                   : 'Eliminar'
                               }
                             >
-                              <FontAwesomeIcon icon={faTrash} />
+                              <Trash2 size={16} />
                             </button>
                           )}
                         </>

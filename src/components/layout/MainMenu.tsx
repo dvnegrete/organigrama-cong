@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faList, faEye, faEyeSlash, faDatabase, faLayerGroup } from '@fortawesome/free-solid-svg-icons';
+import { Menu, List, Eye, EyeOff, Database, Layers } from 'lucide-react';
 import '../../styles/main-menu.css';
 
 interface MainMenuProps {
@@ -36,7 +35,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
         title="Abrir menú"
         aria-label="Abrir menú"
       >
-        <FontAwesomeIcon icon={faBars} />
+        <Menu size={24} />
       </button>
 
       {isMenuOpen && (
@@ -45,7 +44,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
             className="menu-item"
             onClick={() => handleMenuItemClick(onToggleStructureView)}
           >
-            <FontAwesomeIcon icon={faList} className="menu-icon" />
+            <List size={20} className="menu-icon" />
             <span>
               {isStructureViewOpen
                 ? 'Ver Tablero (Editar)'
@@ -57,10 +56,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
             className="menu-item"
             onClick={() => handleMenuItemClick(onToggleSidebar)}
           >
-            <FontAwesomeIcon
-              icon={isSidebarVisible ? faEyeSlash : faEye}
-              className="menu-icon"
-            />
+            {isSidebarVisible ? <EyeOff size={20} className="menu-icon" /> : <Eye size={20} className="menu-icon" />}
             <span>
               {isSidebarVisible
                 ? 'Ocultar Barra Lateral'
@@ -72,7 +68,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
             className="menu-item"
             onClick={() => handleMenuItemClick(onOpenDatabaseModal)}
           >
-            <FontAwesomeIcon icon={faDatabase} className="menu-icon" />
+            <Database size={20} className="menu-icon" />
             <span>Importar/Exportar Base de Datos</span>
           </button>
 
@@ -80,7 +76,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
             className="menu-item"
             onClick={() => handleMenuItemClick(onOpenWorkspaceManager)}
           >
-            <FontAwesomeIcon icon={faLayerGroup} className="menu-icon" />
+            <Layers size={20} className="menu-icon" />
             <span>Gestionar Espacios de Trabajo</span>
           </button>
         </div>
