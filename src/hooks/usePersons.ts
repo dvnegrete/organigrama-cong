@@ -2,13 +2,28 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../db/schema';
 import type { Person, PersonWithDepartments } from '../types';
 import { generateUUID } from '../utils/uuid';
+import { useWorkspaceContext } from '../contexts/WorkspaceContext';
 
 export const usePersons = () => {
-  // Get all persons
-  const persons = useLiveQuery(() => db.persons.toArray()) || [];
+  const { activeWorkspaceId } = useWorkspaceContext();
 
-  // Get all assignments to enrich persons data
-  const assignments = useLiveQuery(() => db.assignments.toArray()) || [];
+  // Get all persons for active workspace
+  const persons = useLiveQuery(() => {
+    if (!activeWorkspaceId) return [];
+    return db.persons
+      .where('workspaceId')
+      .equals(activeWorkspaceId)
+      .toArray();
+  }, [activeWorkspaceId]) || [];
+
+  // Get all assignments for active workspace
+  const assignments = useLiveQuery(() => {
+    if (!activeWorkspaceId) return [];
+    return db.assignments
+      .where('workspaceId')
+      .equals(activeWorkspaceId)
+      .toArray();
+  }, [activeWorkspaceId]) || [];
 
   // Enrich persons with their department assignments
   const personsWithDepartments: PersonWithDepartments[] = persons.map((person) => {
@@ -23,10 +38,15 @@ export const usePersons = () => {
     };
   });
 
-  const createPerson = async (data: Omit<Person, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const createPerson = async (data: Omit<Person, 'id' | 'workspaceId' | 'createdAt' | 'updatedAt'>) => {
+    if (!activeWorkspaceId) {
+      throw new Error('No hay espacio de trabajo activo');
+    }
+
     const now = new Date();
     const person: Person = {
       id: generateUUID(),
+      workspaceId: activeWorkspaceId,
       ...data,
       createdAt: now,
       updatedAt: now

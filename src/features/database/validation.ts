@@ -28,7 +28,9 @@ const isValidPerson = (person: unknown): person is Person => {
     p.name.trim().length > 0 &&
     typeof p.role === 'string' &&
     isValidDate(p.createdAt) &&
-    isValidDate(p.updatedAt)
+    isValidDate(p.updatedAt) &&
+    // workspaceId can be optional for backward compatibility with v1.0 backups
+    (p.workspaceId === undefined || isValidUUID(p.workspaceId))
   );
 };
 
@@ -50,7 +52,9 @@ const isValidDepartment = (dept: unknown): dept is Department => {
     typeof size.width === 'number' &&
     typeof size.height === 'number' &&
     isValidDate(d.createdAt) &&
-    isValidDate(d.updatedAt)
+    isValidDate(d.updatedAt) &&
+    // workspaceId can be optional for backward compatibility with v1.0 backups
+    (d.workspaceId === undefined || isValidUUID(d.workspaceId))
   );
 };
 
@@ -69,7 +73,11 @@ const isValidAssignment = (
     validPersonIds.has(a.personId) &&
     typeof a.departmentId === 'string' &&
     validDepartmentIds.has(a.departmentId) &&
-    isValidDate(a.createdAt)
+    isValidDate(a.createdAt) &&
+    // workspaceId can be optional for backward compatibility with v1.0 backups
+    (a.workspaceId === undefined || isValidUUID(a.workspaceId)) &&
+    // order can be optional for backward compatibility
+    (a.order === undefined || typeof a.order === 'number')
   );
 };
 

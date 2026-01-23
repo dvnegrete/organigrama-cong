@@ -10,5 +10,27 @@ export default defineConfig({
     port: 5173,
     strictPort: false,
     allowedHosts: true
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Separate React into its own chunk
+          'react-vendor': ['react', 'react-dom'],
+          // Separate drag-and-drop library
+          'dnd-vendor': [
+            '@dnd-kit/core',
+            '@dnd-kit/sortable',
+            '@dnd-kit/utilities'
+          ],
+          // Separate database library
+          'db-vendor': ['dexie', 'dexie-react-hooks'],
+          // Separate window resize library
+          'rnd-vendor': ['react-rnd']
+        }
+      }
+    },
+    // Increase chunk size warning limit after optimizations
+    chunkSizeWarningLimit: 300
   }
 })

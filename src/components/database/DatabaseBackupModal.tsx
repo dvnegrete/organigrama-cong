@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCloudArrowUp } from '@fortawesome/free-solid-svg-icons';
+import { CloudUpload } from 'lucide-react';
 import { DatabaseBackupButton } from './DatabaseBackupButton';
 import { DatabaseImportDialog } from './DatabaseImportDialog';
 import '../styles/database.css';
@@ -54,7 +53,7 @@ export const DatabaseBackupModal: React.FC<DatabaseBackupModalProps> = ({ onClos
                   onClick={() => setIsImportDialogOpen(true)}
                   className="btn-import"
                 >
-                  <FontAwesomeIcon icon={faCloudArrowUp} />
+                  <CloudUpload size={16} />
                   {' Importar BD'}
                 </button>
               </div>
@@ -87,7 +86,7 @@ export const DatabaseBackupModal: React.FC<DatabaseBackupModalProps> = ({ onClos
         className="btn-backup-modal"
         title="Exportar o importar base de datos"
       >
-        <FontAwesomeIcon icon={faCloudArrowUp} />
+        <CloudUpload size={24} />
       </button>
 
       {isModalOpen && (
@@ -120,7 +119,7 @@ export const DatabaseBackupModal: React.FC<DatabaseBackupModalProps> = ({ onClos
                   onClick={() => setIsImportDialogOpen(true)}
                   className="btn-import"
                 >
-                  <FontAwesomeIcon icon={faCloudArrowUp} />
+                  <CloudUpload size={16} />
                   {' Importar BD'}
                 </button>
               </div>

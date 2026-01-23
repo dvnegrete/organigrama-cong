@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFilter, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { Filter, Trash2 } from 'lucide-react';
 import type { Department } from '../../types';
 import { useDepartments } from '../../hooks/useDepartments';
 import { useAssignments } from '../../hooks/useAssignments';
@@ -45,7 +44,7 @@ export const DepartmentFilter: React.FC<DepartmentFilterProps> = ({ departments 
             className={`btn-filter ${showFilter ? 'active' : ''}`}
             title={showFilter ? 'Ocultar filtro' : 'Mostrar filtro'}
           >
-            <FontAwesomeIcon icon={faFilter} />
+            <Filter size={16} />
           </button>
         </div>
         {showFilter && (
@@ -83,7 +82,7 @@ export const DepartmentFilter: React.FC<DepartmentFilterProps> = ({ departments 
                   title="Eliminar departamento"
                   type="button"
                 >
-                  <FontAwesomeIcon icon={faTrash} />
+                  <Trash2 size={16} />
                 </button>
               </div>
             );
