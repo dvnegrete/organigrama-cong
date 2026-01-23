@@ -20,7 +20,11 @@ export const DepartmentCanvas: React.FC<DepartmentCanvasProps> = ({ draggingPers
         <div className="top-toolbar">
           <CreateDepartmentButton containerRef={containerRef} />
         </div>
-        <h2>Tablero - Editar Departamentos</h2>
+        <div className='dashboard-canvas-header-title'>
+          <h2>Tablero - Editar Departamentos</h2>
+          <p>(Arrastar y soltar contiene algunos errores)</p>
+
+        </div>
       </div>
 
       <div className="department-canvas" ref={containerRef}>
