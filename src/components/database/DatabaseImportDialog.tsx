@@ -13,6 +13,29 @@ interface DatabaseImportDialogProps {
 
 type DialogStep = 'file-select' | 'preview' | 'destination' | 'importing' | 'result';
 
+const DEFAULT_WORKSPACE_NAME = 'Mi Organigrama';
+
+// Detect if backup is from v1 (no workspace support)
+const isLegacyV1Backup = (backup: DatabaseBackup): boolean => {
+  // If it has workspace flags, it's not a v1 backup
+  if (backup.isWorkspaceExport || backup.isMultiWorkspaceExport) {
+    return false;
+  }
+  // If it has workspaceId, it's not a v1 backup
+  if (backup.workspaceId) {
+    return false;
+  }
+  // Check if data records have workspaceId - if first person doesn't have it, it's v1
+  if (backup.data.persons.length > 0 && !backup.data.persons[0].workspaceId) {
+    return true;
+  }
+  if (backup.data.departments.length > 0 && !backup.data.departments[0].workspaceId) {
+    return true;
+  }
+  // If no data to check, assume it's v1 if no workspace fields
+  return !backup.workspaceId && !backup.isWorkspaceExport;
+};
+
 export const DatabaseImportDialog: React.FC<DatabaseImportDialogProps> = ({ isOpen, onClose, onImportSuccess }) => {
   const [step, setStep] = useState<DialogStep>('file-select');
   const [backup, setBackup] = useState<DatabaseBackup | null>(null);
@@ -61,6 +84,17 @@ export const DatabaseImportDialog: React.FC<DatabaseImportDialogProps> = ({ isOp
       // Check if this is a multi-workspace export (Todos los espacios)
       if (backup.isMultiWorkspaceExport) {
         importResult = await importAllWorkspaces(backup);
+      }
+      // Check if this is a legacy v1 backup (no workspace support)
+      else if (isLegacyV1Backup(backup)) {
+        // Auto-create a new workspace with default name for v1 backups
+        const options: ImportOptions = {
+          mode: importMode,
+          clearBefore: importMode === 'replace',
+          createNewWorkspace: true,
+          newWorkspaceName: DEFAULT_WORKSPACE_NAME
+        };
+        importResult = await importToWorkspace(backup, options);
       }
       // Check if this is a single workspace export and we're importing to a workspace
       else if (backup.isWorkspaceExport || destinationMode === 'new' || destinationMode === 'current') {
@@ -183,6 +217,13 @@ export const DatabaseImportDialog: React.FC<DatabaseImportDialogProps> = ({ isOp
         {step === 'preview' && backup && (
           <div className="import-step">
             <h3>Vista Previa del Backup</h3>
+
+            {isLegacyV1Backup(backup) && (
+              <div className="workspace-import-info">
+                <strong>Backup de versión anterior:</strong> Este archivo no contiene información de espacios de trabajo.
+                Se creará automáticamente un nuevo espacio de trabajo llamado "{DEFAULT_WORKSPACE_NAME}".
+              </div>
+            )}
 
             {backup.isMultiWorkspaceExport && backup.data.workspaces && (
               <div className="workspace-import-info">
