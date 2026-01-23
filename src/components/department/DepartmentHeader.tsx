@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { Department } from '../../types';
 import { useDepartments } from '../../hooks/useDepartments';
 import { useAssignments } from '../../hooks/useAssignments';
+import { PersonPicker } from '../person/PersonPicker';
 
 interface DepartmentHeaderProps {
   department: Department;
@@ -11,8 +12,9 @@ interface DepartmentHeaderProps {
 export const DepartmentHeader: React.FC<DepartmentHeaderProps> = ({ department, onDelete }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(department.name);
+  const [showPersonPicker, setShowPersonPicker] = useState(false);
   const { renameDepartment, deleteDepartment } = useDepartments();
-  const { getAssignmentCount } = useAssignments();
+  const { getAssignmentCount, assignPersonToDepartment } = useAssignments();
 
   const personCount = getAssignmentCount(department.id);
 
@@ -52,6 +54,19 @@ export const DepartmentHeader: React.FC<DepartmentHeaderProps> = ({ department, 
     }
   };
 
+  const handleAddPerson = () => {
+    setShowPersonPicker(true);
+  };
+
+  const handleSelectPerson = async (personId: string) => {
+    try {
+      await assignPersonToDepartment(personId, department.id);
+    } catch (error) {
+      console.error('Error assigning person:', error);
+      alert('Error al asignar la persona');
+    }
+  };
+
   return (
     <div className="department-header">
       <div className="department-title">
@@ -79,6 +94,23 @@ export const DepartmentHeader: React.FC<DepartmentHeaderProps> = ({ department, 
       </div>
 
       <div className="department-actions">
+        <div className="person-picker-container">
+          <button
+            onClick={handleAddPerson}
+            className="btn-icon"
+            title="Agregar Persona"
+            type="button"
+          >
+            +
+          </button>
+          {showPersonPicker && (
+            <PersonPicker
+              departmentId={department.id}
+              onSelect={handleSelectPerson}
+              onClose={() => setShowPersonPicker(false)}
+            />
+          )}
+        </div>
         <button
           onClick={handleDelete}
           className="btn-icon danger"
