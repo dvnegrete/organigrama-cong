@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { UserPlus } from 'lucide-react';
 import type { Department } from '../../types';
 import { useDepartments } from '../../hooks/useDepartments';
 import { useAssignments } from '../../hooks/useAssignments';
@@ -97,11 +98,11 @@ export const DepartmentHeader: React.FC<DepartmentHeaderProps> = ({ department, 
         <div className="person-picker-container">
           <button
             onClick={handleAddPerson}
-            className="btn-icon"
+            className={`btn-icon btn-add-person ${showPersonPicker ? 'active' : ''}`}
             title="Agregar Persona"
             type="button"
           >
-            +
+            <UserPlus size={21} />
           </button>
           {showPersonPicker && (
             <PersonPicker

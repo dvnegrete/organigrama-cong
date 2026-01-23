@@ -179,6 +179,12 @@
   color: var(--color-danger);
 }
 
+.btn-add-person:hover,
+.btn-add-person.active {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
 /* Toggle Sidebar Button */
 .btn-toggle-sidebar {
   background: transparent;
